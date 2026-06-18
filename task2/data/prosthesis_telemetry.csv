@@ -1,0 +1,10 @@
+event_id,prosthesis_id,event_time,response_time_ms,battery_level,movement_type,is_error
+1,1001,2026-06-17 10:00:00,87,81,grip,false
+2,1001,2026-06-17 10:05:00,95,80,release,false
+3,1001,2026-06-17 10:10:00,121,78,grip,true
+4,1002,2026-06-17 10:00:00,76,67,grip,false
+5,1002,2026-06-17 10:07:00,84,66,rotate,false
+6,1003,2026-06-17 10:15:00,92,74,grip,false
+7,1003,2026-06-17 10:20:00,99,72,release,false
+8,1004,2026-06-17 11:00:00,104,61,grip,false
+9,1004,2026-06-17 11:10:00,133,58,release,true

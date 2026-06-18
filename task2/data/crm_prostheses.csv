@@ -1,0 +1,5 @@
+prosthesis_id,user_id,model,production_status
+1001,1,BionicPRO Arm v1,active
+1002,2,BionicPRO Arm v1,active
+1003,3,BionicPRO Hand v2,active
+1004,4,BionicPRO Hand v2,active
