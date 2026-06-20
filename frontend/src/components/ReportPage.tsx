@@ -7,7 +7,7 @@ const ReportPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   const downloadReport = async () => {
-    if (!keycloak?.token) {
+    if (!keycloak?.authenticated) {
       setError('Not authenticated');
       return;
     }
@@ -16,13 +16,41 @@ const ReportPage: React.FC = () => {
       setLoading(true);
       setError(null);
 
+      // Обновляем токен, если он скоро истечёт
+      await keycloak.updateToken(30);
+
       const response = await fetch(`${process.env.REACT_APP_API_URL}/reports`, {
+        method: 'GET',
         headers: {
-          'Authorization': `Bearer ${keycloak.token}`
-        }
+          Authorization: `Bearer ${keycloak.token}`,
+          Accept: 'application/json',
+        },
       });
 
-      
+      if (!response.ok) {
+        const errorBody = await response.json().catch(() => null);
+        throw new Error(
+          errorBody?.detail || `Failed to download report. Status: ${response.status}`
+        );
+      }
+
+      const reportData = await response.json();
+
+      const blob = new Blob([JSON.stringify(reportData, null, 2)], {
+        type: 'application/json',
+      });
+
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+
+      link.href = url;
+      link.download = `bionicpro-report-${new Date().toISOString().slice(0, 10)}.json`;
+
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      window.URL.revokeObjectURL(url);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
@@ -51,7 +79,11 @@ const ReportPage: React.FC = () => {
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
       <div className="p-8 bg-white rounded-lg shadow-md">
         <h1 className="text-2xl font-bold mb-6">Usage Reports</h1>
-        
+
+        <p className="mb-4 text-gray-700">
+          User: {keycloak.tokenParsed?.email || keycloak.tokenParsed?.preferred_username}
+        </p>
+
         <button
           onClick={downloadReport}
           disabled={loading}
