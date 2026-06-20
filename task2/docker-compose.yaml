@@ -150,6 +150,8 @@ services:
       KEYCLOAK_ISSUER: http://localhost:8080/realms/reports-realm
       KEYCLOAK_JWKS_URL: http://host.docker.internal:8080/realms/reports-realm/protocol/openid-connect/certs
 
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     ports:
       - "9000:9000"
     depends_on:
